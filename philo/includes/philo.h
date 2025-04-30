@@ -17,6 +17,8 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <stdint.h>
+# include <unistd.h>
+# include "utils.h"
 
 
 typedef struct s_data
@@ -35,7 +37,7 @@ typedef struct s_data
 
 	unsigned int	n_philos; // Número total de filósofos
 	unsigned int	philos_done; // Número de filósofos que alcanzaron max_meals (si aplica)
-	unsigned int	max_meals; // Número máximo de comidas por filósofo (si es parte del objetivo)
+	int				max_meals; // Número máximo de comidas por filósofo (si es parte del objetivo)
 
 	int				stop_simulation; // Flag para indicar si la simulación debe terminar
 }					t_data;
@@ -54,6 +56,17 @@ typedef struct s_philo
 	pthread_t		thread; // Hilo individual del filósofo
 }				t_philo;
 
+# define MAX_PHILOS 200
 
+/*init.c*/
+int		init_mutex(t_data *data);
+int		init_forks(t_data *data);
+
+/*parser.c*/
+int 	create_args(int argc, char **argv, size_t *val);
+int		check_args(int argc, char **argv, t_data *data);
+
+/*philo_routine.c*/
+void	*philo_routine(void *arg);
 
 #endif

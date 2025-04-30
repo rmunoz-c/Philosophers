@@ -20,8 +20,10 @@
 # include <limits.h>
 # include <stdarg.h>
 
+size_t	ft_atoul(const char *n, unsigned long *val);
 void	*ft_calloc(size_t nmemb, size_t size);
 void	ft_free_exit(void *ptr);
+int		ft_is_str_digit(char *s);
 int		ft_putstr(char *s);
 int		ft_putchar(int c);
 int		ft_put_hex_ptr(size_t n, const char format, int is_ptr);

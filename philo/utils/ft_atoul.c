@@ -1,39 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putnbr.c                                        :+:      :+:    :+:   */
+/*   ft_atoul.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmunoz-c <rmunoz-c@student.42.fr>          #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-16 16:30:58 by rmunoz-c          #+#    #+#             */
-/*   Updated: 2025-04-16 16:30:58 by rmunoz-c         ###   ########.fr       */
+/*   Created: 2025-04-30 16:39:57 by rmunoz-c          #+#    #+#             */
+/*   Updated: 2025-04-30 16:39:57 by rmunoz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.h"
 
-size_t	ft_putnbr_fd(long n, int fd)
+size_t	ft_atoul(const char *n, unsigned long *val)
 {
-	size_t	i;
+	size_t	count;
+	size_t	result;
 
-	i = 0;
-	if (n == (-__LONG_MAX__) - 1)
+	count = 0;
+	result = 0;
+	while (n[count] == ' ' || (n[count] >= 9 && n[count] <= 13))
+		count++;
+	while (n[count])
 	{
-		ft_putchar('-');
-		ft_putchar('9');
-		i += 2;
-		n = 223372036854775808;
+		result = result * 10 +  (n[count++] - '0');
+		if (result > ULONG_MAX)
+			return (0);
 	}
-	if (n < 0)
-	{
-		ft_putchar('-');
-		i ++;
-		n = -n;
-	}
-	if (n >= 10)
-	{
-		i += ft_putnbr_fd(n / 10, fd);
-	}
-	ft_putchar((n % 10) + '0');
-	return (i + 1);
+	if (result == 0)
+		return (0);
+	*val = (int)result;
+	return (1);
 }
