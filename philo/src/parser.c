@@ -12,7 +12,7 @@
 
 #include "../includes/philo.h"
 
-int create_args(int argc, char **argv, size_t *val)
+int	create_args(int argc, char **argv, size_t *val)
 {
 	int	i;
 
@@ -23,26 +23,26 @@ int create_args(int argc, char **argv, size_t *val)
 			return (0);
 		i++;
 	}
-	 i = 0;
-	 while (i < argc - 1)
-	 {
+	i = 0;
+	while (i < argc - 1)
+	{
 		if (!ft_atoul(argv[i + 1], &val[i]))
 			return (0);
 		i++;
-	 }
-	 return (1);
+	}
+	return (1);
 }
 
 int	check_args(int argc, char **argv, t_data *data)
 {
-	size_t array[5];
+	size_t	array[5];
 
 	if (argc < 5 || argc > 6)
-		return (0);
+		return (write(2, "❌ Error: Wrong number of arguments\n", 36), 0);
 	if (!create_args(argc, argv, array))
-		return (0);
-	if (array[0] > MAX_PHILOS)
-		return (0);
+		return (write(2, "❌ Error: Invalid argument(s)\n", 30), 0);
+	if (array[0] == 0 || array[0] > MAX_PHILOS)
+		return (write(2, "❌ Error: Invalid number of philosophers\n", 41), 0);
 	data->n_philos = array[0];
 	data->time_to_die = array[1];
 	data->time_to_eat = array[2];
@@ -50,5 +50,9 @@ int	check_args(int argc, char **argv, t_data *data)
 	data->max_meals = -1;
 	if (argc == 6)
 		data->max_meals = array[4];
+	data->stop_simulation = 0;
+	data->philos_done = 0;
+	if (!init_mutex(data))
+		return (write(2, "❌ Error: Could not initialize mutexes\n", 39), 0);
 	return (1);
 }

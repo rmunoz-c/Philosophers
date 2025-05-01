@@ -16,7 +16,7 @@
 int	main(int argc, char **argv)
 {
 	t_data	data;
-	t_philo philo;
+	t_philo	philo;
 
 	if (!check_args(argc, argv, &data))
 	{

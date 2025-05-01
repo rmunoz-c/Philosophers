@@ -1,29 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isdigit.c                                       :+:      :+:    :+:   */
+/*   usleep.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmunoz-c <rmunoz-c@student.42.fr>          #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-30 16:32:20 by rmunoz-c          #+#    #+#             */
-/*   Updated: 2025-04-30 16:32:20 by rmunoz-c         ###   ########.fr       */
+/*   Created: 2025-05-01 15:29:55 by rmunoz-c          #+#    #+#             */
+/*   Updated: 2025-05-01 15:29:55 by rmunoz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/utils.h"
+#include "../includes/philo.h"
 
-int	ft_is_str_digit(char *s)
+uint64_t	get_time(void)
 {
-	int	i;
+	struct timeval	time;
 
-	i = 0;
-	if (s[0] == '\0')
-		return (0);
-	while (s[i] != '\0')
-	{
-		if (s[i] < '0' || s[i] > '9')
-			return (0);
-		i++;
-	}
-	return (1);
+	gettimeofday(&time, NULL);
+	return ((uint64_t)(time.tv_sec * 1000 + time.tv_usec / 1000));
+}
+
+void	usleep_control(__useconds_t milliseconds)
+{
+	uint64_t	end;
+
+	end = get_time() + milliseconds;
+	while (get_time() < end)
+		usleep(3);
 }

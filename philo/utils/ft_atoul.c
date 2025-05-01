@@ -23,7 +23,7 @@ size_t	ft_atoul(const char *n, unsigned long *val)
 		count++;
 	while (n[count])
 	{
-		result = result * 10 +  (n[count++] - '0');
+		result = result * 10 + (n[count++] - '0');
 		if (result > ULONG_MAX)
 			return (0);
 	}
