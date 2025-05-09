@@ -3,13 +3,17 @@ NAME := philo
 
 # Compilador y flags
 CC = cc
-CFLAGS := -Wall -Werror -Wextra -g -MMD -MP
+CFLAGS := -Wall -Werror -Wextra -g -MMD -MP -fsanitize=thread
 
 # Rutas de fuentes y objetos
-SRC :=	src/init.c \
+SRC :=	src/eat_routine.c \
+		src/free.c \
+		src/init.c \
+		src/logs.c \
 		src/main.c \
 		src/parser.c \
 		src/philo_routine.c \
+		src/usleep.c \
 		utils/ft_atoul.c \
 		utils/ft_calloc.c \
 		utils/ft_free_exit.c \

@@ -15,35 +15,32 @@
 
 int	main(int argc, char **argv)
 {
+	size_t	i;
 	t_data	data;
-	t_philo	philo;
 
 	if (!check_args(argc, argv, &data))
 	{
-		printf("❌ Error: argumentos inválidos\n");
+		write(2, "❌ Error: argumentos inválidos\n", 31);
 		return (1);
 	}
-	printf("✅ Argumentos parseados correctamente:\n");
-	printf("Número de filósofos:         %u\n", data.n_philos);
-	printf("Tiempo para morir (ms):      %lu\n", data.time_to_die);
-	printf("Tiempo para comer (ms):      %lu\n", data.time_to_eat);
-	printf("Tiempo para dormir (ms):     %lu\n", data.time_to_sleep);
-	printf("Veces que debe comer cada uno: ");
-	if (data.max_meals == -1)
-		printf("no especificado\n");
-	else
-		printf("%u\n", data.max_meals);
-	data.n_philos = 1;
-	write (1, "hola\n", 6);
-	if (!init_forks(&data) || !init_mutex(&data))
+	if (!init(argc, argv, &data))
 		return (1);
-	philo.id = 1;
-	philo.s_data = &data;
-	if (pthread_create(&philo.thread, NULL, philo_routine, (void *)&philo) != 0)
+	i = 0;
+	data.philos[i].born_time = get_time();
+	data.philos[i].last_meal = get_time();
+	while (i < data.n_philos)
 	{
-		write(2, "❌ Error: could not create thread\n", 34);
-		return (1);
+		if (pthread_create(&data.threads[i], NULL,
+				philo_routine, (void *)&data.philos[i]) != 0)
+		{
+			write(2, "❌ Error: no se pudo crear el hilo\n", 35);
+			return (1);
+		}
+		i++;
 	}
-	pthread_join(philo.thread, NULL);
+	i = 0;
+	while (i < data.n_philos)
+		pthread_join(data.threads[i++], NULL);
+	free_all(&data);
 	return (0);
 }

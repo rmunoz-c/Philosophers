@@ -14,13 +14,13 @@
 
 void	sleep_routine(t_philo *philo)
 {
-	usleep_control(philo->s_data->time_to_sleep);
 	pthread_mutex_lock(&philo->s_data->logs_mutex);
 	if (!philo->is_alive)
 	{
 		pthread_mutex_unlock(&philo->s_data->logs_mutex);
 		return ;
 	}
+	usleep_control(philo->s_data->time_to_sleep);
 	sleep_log(philo);
 	pthread_mutex_unlock(&philo->s_data->logs_mutex);
 }
@@ -39,7 +39,7 @@ void	think_routine(t_philo *philo)
 
 void	start_philo_routine(t_philo *philo)
 {
-	//eat_routine(philo);
+	eat_routine(philo);
 	sleep_routine(philo);
 	think_routine(philo);
 }
@@ -49,15 +49,21 @@ void	*philo_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	printf("🧠 Filósofo %u ha comenzado su rutina\n", philo->id);
+	if (philo->id % 2)
+	{
+		usleep_control(40);
+		philo->first_fork = philo->left_fork;
+		philo->second_fork = philo->right_fork;
+	}
+	else
+	{
+		philo->first_fork = philo->right_fork;
+		philo->second_fork = philo->left_fork;
+	}
 	while (1)
 	{
-		printf("Filósofo %u está pensando...\n", philo->id);
-		usleep(philo->s_data->time_to_sleep);
-		printf("Filósofo %u está comiendo...\n", philo->id);
-		usleep(philo->s_data->time_to_eat);
-		printf("Filósofo %d está durmiendo...\n", philo->id);
-		usleep(philo->s_data->time_to_sleep);
+		take_forks(philo, philo->first_fork, philo->second_fork);
+		start_philo_routine(philo);
 	}
 	return (NULL);
 }

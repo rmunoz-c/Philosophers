@@ -21,6 +21,25 @@
 # include <sys/time.h>
 # include "utils.h"
 
+struct s_data;
+
+
+typedef struct s_philo
+{
+	struct s_data			*s_data; // Puntero a la estructura compartida (para acceso global)
+	// pthread_mutex_t	last_meal_mutex; // Protege el campo last_meal de accesos simultáneos
+	pthread_mutex_t	*left_fork; // Puntero al mutex del tenedor a su izquierda
+	pthread_mutex_t	*right_fork; // Puntero al mutex del tenedor a su derecha
+	pthread_mutex_t	*first_fork; // Puntero al mutex del primer tenedor
+	pthread_mutex_t	*second_fork; // Puntero al mutex del segundo tenedor
+	uint64_t		last_meal; // Tiempo de la última comida del filósofo
+	uint64_t		born_time; // Marca de tiempo en que el filósofo se crea y empieza la rutina
+	unsigned int	is_alive; // Indica si el filosofo sigue vivo (1 si está vivo, 0 si no lo está)
+	int	meals_eaten; // Cantidad de veces que ha comido
+	unsigned int	id;	// ID único del filósofo (de 1 a n_philos)
+	pthread_t		thread; // Hilo individual del filósofo
+}				t_philo;
+
 typedef struct s_data
 {
 	pthread_mutex_t	*forks; // Array de mutexes, uno por cada tenedor (entre filósofos vecinos)
@@ -40,25 +59,21 @@ typedef struct s_data
 	int				stop_simulation; // Flag para indicar si la simulación debe terminar
 }					t_data;
 
-typedef struct s_philo
-{
-	t_data			*s_data; // Puntero a la estructura compartida (para acceso global)
-	pthread_mutex_t	last_meal_mutex; // Protege el campo last_meal de accesos simultáneos
-	pthread_mutex_t	*left_fork; // Puntero al mutex del tenedor a su izquierda
-	pthread_mutex_t	*right_fork; // Puntero al mutex del tenedor a su derecha
-	uint64_t		last_meal; // Tiempo de la última comida del filósofo
-	uint64_t		born_time; // Marca de tiempo en que el filósofo se crea y empieza la rutina
-	unsigned int	is_alive; // Indica si el filosofo sigue vivo (1 si está vivo, 0 si no lo está)
-	unsigned int	meals_eaten; // Cantidad de veces que ha comido
-	unsigned int	id;	// ID único del filósofo (de 1 a n_philos)
-	pthread_t		thread; // Hilo individual del filósofo
-}				t_philo;
 
 # define MAX_PHILOS 200
 
+/*eat_routine.c*/
+int			take_forks(t_philo *philo, pthread_mutex_t *first, pthread_mutex_t *second);
+void		eat_routine(t_philo *philo);
+
+/*free.c*/
+void	free_all(t_data *data);
+
 /*init.c*/
 int			init_mutex(t_data *data);
+int			alloc_data(t_data *data);
 int			init_forks(t_data *data);
+int			init(int argc, char **argv, t_data *data);
 
 /*logs.c*/
 void		fork_log(t_philo *philo, size_t equip);

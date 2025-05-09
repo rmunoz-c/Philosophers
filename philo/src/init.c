@@ -81,10 +81,8 @@ int	init_forks(t_data *data)
 	while (i < data->n_philos)
 	{
 		data->philos[i].left_fork = &data->forks[i];
-		if (i == 0)
-			data->philos[i].right_fork = &data->forks[data->n_philos - 1];
-		else
-			data->philos[i].right_fork = &data->forks[i - 1];
+		data->philos[i].right_fork = &data->forks[(i + data->n_philos - 1)
+			% data->n_philos];
 		i++;
 	}
 	return (1);
@@ -92,7 +90,7 @@ int	init_forks(t_data *data)
 
 void	init_philos(t_data *data)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	while (i < data->n_philos)
@@ -101,13 +99,7 @@ void	init_philos(t_data *data)
 		data->philos[i].id = i + 1;
 		data->philos[i].meals_eaten = 0;
 		data->philos[i].last_meal = 0;
-		if (pthread_mutex_init(&data->philos[i].last_meal_mutex, NULL) != 0)
-		{
-			write(2, "❌ Error initializing philo's last_meal_mutex\n", 49);
-			while (i > 0)
-				pthread_mutex_destroy(&data->philos[--i].last_meal_mutex);
-			return ;
-		}
+		data->philos[i].is_alive = 1;
 		i++;
 	}
 }
