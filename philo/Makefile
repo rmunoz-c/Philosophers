@@ -7,12 +7,13 @@ CFLAGS := -Wall -Werror -Wextra -g -MMD -MP -fsanitize=thread
 
 # Rutas de fuentes y objetos
 SRC :=	src/eat_routine.c \
-		src/free.c \
+		src/free_and_stop.c \
 		src/init.c \
 		src/logs.c \
 		src/main.c \
 		src/parser.c \
 		src/philo_routine.c \
+		src/reaper.c
 		src/usleep.c \
 		utils/ft_atoul.c \
 		utils/ft_calloc.c \

@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   forks.c                                            :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmunoz-c <rmunoz-c@student.42.fr>          #+#  +:+       +#+        */
+/*   By: rmunoz-c <rmunoz-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-30 17:50:08 by rmunoz-c          #+#    #+#             */
-/*   Updated: 2025-04-30 17:50:08 by rmunoz-c         ###   ########.fr       */
+/*   Created: 2025/04/30 17:50:08 by rmunoz-c          #+#    #+#             */
+/*   Updated: 2025/05/12 19:09:37 by rmunoz-c         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../includes/philo.h"
 
@@ -100,6 +100,12 @@ void	init_philos(t_data *data)
 		data->philos[i].meals_eaten = 0;
 		data->philos[i].last_meal = 0;
 		data->philos[i].is_alive = 1;
+		i++;
+		if (pthread_mutex_init(&data->philos[i].last_meal_mutex, NULL) != 0)
+		{
+			write(2, "❌ Error initializing last_meal_mutex\n", 38);
+			exit(EXIT_FAILURE);
+		}
 		i++;
 	}
 }
