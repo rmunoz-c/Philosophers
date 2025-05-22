@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmunoz-c <rmunoz-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rmunoz-c <rmunoz-c@student.42.fr>          #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/15 14:26:41 by rmunoz-c          #+#    #+#             */
-/*   Updated: 2025/05/12 21:02:54 by rmunoz-c         ###   ########.fr       */
+/*   Created: 2025-05-20 14:49:26 by rmunoz-c          #+#    #+#             */
+/*   Updated: 2025-05-20 14:49:26 by rmunoz-c         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
@@ -31,6 +31,7 @@ typedef struct s_philo
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*first_fork;
 	pthread_mutex_t	*second_fork;
+	pthread_mutex_t	is_alive_mutex;
 	uint64_t		last_meal;
 	uint64_t		born_time;
 	unsigned int	is_alive;
@@ -63,10 +64,14 @@ typedef struct s_data
 /*eat_routine.c*/
 int			take_forks(t_philo *philo, pthread_mutex_t *first,
 				pthread_mutex_t *second);
+void		drop_forks_and_log(t_philo *philo, pthread_mutex_t *first,
+				pthread_mutex_t *second);
 void		eat_routine(t_philo *philo);
 
 /*free.c*/
 void		free_all(t_data *data);
+int			get_is_alive(t_philo *philo);
+void		set_is_alive(t_philo *philo, int val);
 int			get_stop_simulation(t_data *data);
 void		stop_simulation(t_data *data, int val);
 
@@ -102,6 +107,6 @@ void		*reaper(void *arg);
 
 /*usleep.c*/
 uint64_t	get_time(void);
-void		usleep_control(__useconds_t miliseconds);
+void		usleep_control(uint64_t time_in_ms, t_philo *philo);
 
 #endif

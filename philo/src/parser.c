@@ -16,7 +16,7 @@ int	create_args(int argc, char **argv, size_t *val)
 {
 	int	i;
 
-	i = 1;
+	i = 0;
 	while (i < argc)
 	{
 		if (!ft_is_str_digit(argv[i]))
@@ -24,9 +24,9 @@ int	create_args(int argc, char **argv, size_t *val)
 		i++;
 	}
 	i = 0;
-	while (i < argc - 1)
+	while (i < argc)
 	{
-		if (!ft_atoul(argv[i + 1], &val[i]))
+		if (!ft_atoul(argv[i], &val[i]))
 			return (0);
 		i++;
 	}
@@ -39,7 +39,7 @@ int	check_args(int argc, char **argv, t_data *data)
 
 	if (argc < 5 || argc > 6)
 		return (write(2, "❌ Error: Wrong number of arguments\n", 36), 0);
-	if (!create_args(argc, argv, array))
+	if (!create_args(argc - 1, argv + 1, array))
 		return (write(2, "❌ Error: Invalid argument(s)\n", 30), 0);
 	if (array[0] == 0 || array[0] > MAX_PHILOS)
 		return (write(2, "❌ Error: Invalid number of philosophers\n", 41), 0);

@@ -20,11 +20,15 @@ uint64_t	get_time(void)
 	return ((uint64_t)(time.tv_sec * 1000 + time.tv_usec / 1000));
 }
 
-void	usleep_control(__useconds_t milliseconds)
+void	usleep_control(uint64_t time_in_ms, t_philo *philo)
 {
-	uint64_t	end;
+	uint64_t	start;
 
-	end = get_time() + milliseconds;
-	while (get_time() < end)
-		usleep(300);
+	start = get_time();
+	while ((get_time() - start) < time_in_ms)
+	{
+		if (!get_is_alive(philo) || get_stop_simulation(philo->s_data))
+			break ;
+		usleep(500);
+	}
 }

@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmunoz-c <rmunoz-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rmunoz-c <rmunoz-c@student.42.fr>          #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/30 17:50:08 by rmunoz-c          #+#    #+#             */
-/*   Updated: 2025/05/12 19:09:37 by rmunoz-c         ###   ########.fr       */
+/*   Created: 2025-05-20 14:47:56 by rmunoz-c          #+#    #+#             */
+/*   Updated: 2025-05-20 14:47:56 by rmunoz-c         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../includes/philo.h"
 
@@ -39,23 +39,12 @@ int	init_mutex(t_data *data)
 
 int	alloc_data(t_data *data)
 {
-	data->threads = malloc(sizeof(pthread_t) * data->n_philos);
-	if (!data->threads)
+	data->philos = ft_calloc(data->n_philos, sizeof(t_philo));
+	data->threads = ft_calloc(data->n_philos, sizeof(pthread_t));
+	data->forks = ft_calloc(data->n_philos, sizeof(pthread_mutex_t));
+	if (!data->philos || !data->threads || !data->forks)
 	{
-		write(2, "❌ Error: could not allocate threads\n", 37);
-		return (0);
-	}
-	data->forks = malloc(data->n_philos * sizeof(pthread_mutex_t));
-	if (!data->forks)
-	{
-		write(2, "❌ Error: could not allocate forks\n", 35);
-		free(data->threads);
-		return (0);
-	}
-	data->philos = malloc(sizeof(t_philo) * data->n_philos);
-	if (!data->philos)
-	{
-		write(2, "❌ Error: could not allocate philos\n", 36);
+		free(data->philos);
 		free(data->threads);
 		free(data->forks);
 		return (0);
@@ -100,10 +89,14 @@ void	init_philos(t_data *data)
 		data->philos[i].meals_eaten = 0;
 		data->philos[i].last_meal = 0;
 		data->philos[i].is_alive = 1;
-		i++;
 		if (pthread_mutex_init(&data->philos[i].last_meal_mutex, NULL) != 0)
 		{
 			write(2, "❌ Error initializing last_meal_mutex\n", 38);
+			exit(EXIT_FAILURE);
+		}
+		if (pthread_mutex_init(&data->philos[i].is_alive_mutex, NULL) != 0)
+		{
+			write(2, "❌ Error initializing is_alive_mutex\n", 37);
 			exit(EXIT_FAILURE);
 		}
 		i++;

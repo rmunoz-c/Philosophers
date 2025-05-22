@@ -13,7 +13,7 @@ SRC :=	src/eat_routine.c \
 		src/main.c \
 		src/parser.c \
 		src/philo_routine.c \
-		src/reaper.c
+		src/reaper.c \
 		src/usleep.c \
 		utils/ft_atoul.c \
 		utils/ft_calloc.c \
@@ -43,15 +43,15 @@ RESET := \033[0m
 .DEFAULT_GOAL := all
 
 all: $(NAME)
-	@printf "$(GREEN)\n✅ Compilación completa$(RESET)\n"
 
 $(NAME): $(OBJ)
 	@printf "$(CYAN)\r🔗 Enlazando: $(NAME)                     $(RESET)\n"
 	@$(CC) $(OBJ) -o $(NAME) $(CFLAGS)
+	@printf "$(GREEN)\n✅ Compilación completa$(RESET)\n"
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	@printf "$(BLUE)\r⚙️  Compilando: $<                         $(RESET)\n"
+	@printf "$(BLUE)\r⚙️  Compilando: $<                         $(RESET)"
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
 run: $(NAME)

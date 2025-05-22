@@ -16,9 +16,11 @@ int	ft_is_str_digit(char *s)
 {
 	int	i;
 
-	i = 0;
+	if (!s)
+		return (0);
 	if (s[0] == '\0')
 		return (0);
+	i = 0;
 	while (s[i] != '\0')
 	{
 		if (s[i] < '0' || s[i] > '9')

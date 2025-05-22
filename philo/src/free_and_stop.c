@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   free_and_stop.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmunoz-c <rmunoz-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rmunoz-c <rmunoz-c@student.42.fr>          #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/09 15:39:31 by rmunoz-c          #+#    #+#             */
-/*   Updated: 2025/05/12 20:57:36 by rmunoz-c         ###   ########.fr       */
+/*   Created: 2025-05-20 14:49:01 by rmunoz-c          #+#    #+#             */
+/*   Updated: 2025-05-20 14:49:01 by rmunoz-c         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../includes/philo.h"
 
@@ -19,7 +19,7 @@ void	free_all(t_data *data)
 	i = 0;
 	while (i < data->n_philos)
 	{
-		pthread_mutex_destroy(&data->forks[i++]);
+		pthread_mutex_destroy(&data->forks[i]);
 		pthread_mutex_destroy(&data->philos[i].last_meal_mutex);
 		i++;
 	}
@@ -30,6 +30,23 @@ void	free_all(t_data *data)
 	free(data->threads);
 	free(data->forks);
 	free(data->philos);
+}
+
+int	get_is_alive(t_philo *philo)
+{
+	int	val;
+
+	pthread_mutex_lock(&philo->is_alive_mutex);
+	val = philo->is_alive;
+	pthread_mutex_unlock(&philo->is_alive_mutex);
+	return (val);
+}
+
+void	set_is_alive(t_philo *philo, int val)
+{
+	pthread_mutex_lock(&philo->is_alive_mutex);
+	philo->is_alive = val;
+	pthread_mutex_unlock(&philo->is_alive_mutex);
 }
 
 int	get_stop_simulation(t_data *data)

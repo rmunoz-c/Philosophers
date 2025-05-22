@@ -1,53 +1,46 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   eat_routine.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmunoz-c <rmunoz-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rmunoz-c <rmunoz-c@student.42.fr>          #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/12 20:53:49 by rmunoz-c          #+#    #+#             */
-/*   Updated: 2025/05/12 20:54:14 by rmunoz-c         ###   ########.fr       */
+/*   Created: 2025-05-20 14:48:44 by rmunoz-c          #+#    #+#             */
+/*   Updated: 2025-05-20 14:48:44 by rmunoz-c         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "../includes/philo.h"
 
 int	take_forks(t_philo *philo, pthread_mutex_t *first, pthread_mutex_t *second)
 {
 	pthread_mutex_lock(first);
+	if (pthread_mutex_trylock(second) != 0)
+	{
+		pthread_mutex_unlock(first);
+		return (0);
+	}
 	pthread_mutex_lock(&philo->s_data->logs_mutex);
-	if (!philo->is_alive || philo->s_data->stop_simulation)
+	if (!get_is_alive(philo) || get_stop_simulation(philo->s_data))
 	{
 		pthread_mutex_unlock(&philo->s_data->logs_mutex);
+		pthread_mutex_unlock(second);
 		pthread_mutex_unlock(first);
 		return (0);
 	}
 	fork_log(philo, 1);
-	pthread_mutex_unlock(&philo->s_data->logs_mutex);
-	pthread_mutex_lock(second);
-	pthread_mutex_lock(&philo->s_data->logs_mutex);
-	if (!philo->is_alive || philo->s_data->stop_simulation)
-	{
-		pthread_mutex_unlock(&philo->s_data->logs_mutex);
-		pthread_mutex_unlock(first);
-		pthread_mutex_unlock(second);
-		return (0);
-	}
 	fork_log(philo, 1);
 	pthread_mutex_unlock(&philo->s_data->logs_mutex);
 	return (1);
 }
 
-static void	drop_forks_and_log(t_philo *philo,
-								pthread_mutex_t *first,
-								pthread_mutex_t *second)
+void	drop_forks_and_log(t_philo *philo, pthread_mutex_t *first,
+			pthread_mutex_t *second)
 {
+	pthread_mutex_unlock(first);
 	pthread_mutex_unlock(second);
 	pthread_mutex_lock(&philo->s_data->logs_mutex);
 	fork_log(philo, 0);
-	pthread_mutex_unlock(&philo->s_data->logs_mutex);
-	pthread_mutex_unlock(first);
-	pthread_mutex_lock(&philo->s_data->logs_mutex);
 	fork_log(philo, 0);
 	pthread_mutex_unlock(&philo->s_data->logs_mutex);
 }
@@ -55,14 +48,14 @@ static void	drop_forks_and_log(t_philo *philo,
 void	eat_routine(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->s_data->logs_mutex);
-	if (!philo->is_alive)
+	if (!get_is_alive(philo))
 	{
 		pthread_mutex_unlock(&philo->s_data->logs_mutex);
 		return ;
 	}
 	eat_log(philo);
 	pthread_mutex_unlock(&philo->s_data->logs_mutex);
-	pthread_mutex_lock(&philo->s_data->logs_mutex);
+	pthread_mutex_lock(&philo->last_meal_mutex);
 	philo->last_meal = get_time();
 	if (philo->meals_eaten > -1
 		&& philo->meals_eaten < philo->s_data->max_meals)
@@ -75,7 +68,7 @@ void	eat_routine(t_philo *philo)
 			pthread_mutex_unlock(&philo->s_data->philos_done_mutex);
 		}
 	}
-	pthread_mutex_unlock(&philo->s_data->logs_mutex);
-	usleep_control(philo->s_data->time_to_eat);
+	pthread_mutex_unlock(&philo->last_meal_mutex);
+	usleep_control(philo->s_data->time_to_eat, philo);
 	drop_forks_and_log(philo, philo->first_fork, philo->second_fork);
 }
