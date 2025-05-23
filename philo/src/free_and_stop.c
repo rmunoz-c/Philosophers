@@ -16,20 +16,29 @@ void	free_all(t_data *data)
 {
 	size_t	i;
 
-	i = 0;
-	while (i < data->n_philos)
+	if (data->philos)
 	{
-		pthread_mutex_destroy(&data->forks[i]);
-		pthread_mutex_destroy(&data->philos[i].last_meal_mutex);
-		i++;
+		i = 0;
+		while (i < data->n_philos)
+		{
+			pthread_mutex_destroy(&data->philos[i].last_meal_mutex);
+			pthread_mutex_destroy(&data->philos[i].is_alive_mutex);
+			i++;
+		}
+		free(data->philos);
 	}
+	if (data->forks)
+	{
+		i = 0;
+		while (i < data->n_philos)
+			pthread_mutex_destroy(&data->forks[i++]);
+		free(data->forks);
+	}
+	if (data->threads)
+		free(data->threads);
 	pthread_mutex_destroy(&data->logs_mutex);
-	pthread_mutex_destroy(&data->death_mutex);
 	pthread_mutex_destroy(&data->stop_mutex);
 	pthread_mutex_destroy(&data->philos_done_mutex);
-	free(data->threads);
-	free(data->forks);
-	free(data->philos);
 }
 
 int	get_is_alive(t_philo *philo)

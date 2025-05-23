@@ -52,7 +52,5 @@ int	check_args(int argc, char **argv, t_data *data)
 		data->max_meals = array[4];
 	data->stop_simulation = 0;
 	data->philos_done = 0;
-	if (!init_mutex(data))
-		return (write(2, "❌ Error: Could not initialize mutexes\n", 39), 0);
 	return (1);
 }

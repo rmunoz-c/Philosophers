@@ -14,12 +14,9 @@
 
 void	sleep_routine(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->s_data->logs_mutex);
 	if (!philo->is_alive || get_stop_simulation(philo->s_data))
-	{
-		pthread_mutex_unlock(&philo->s_data->logs_mutex);
 		return ;
-	}
+	pthread_mutex_lock(&philo->s_data->logs_mutex);
 	sleep_log(philo);
 	pthread_mutex_unlock(&philo->s_data->logs_mutex);
 	usleep_control(philo->s_data->time_to_sleep, philo);
@@ -40,8 +37,12 @@ void	think_routine(t_philo *philo)
 void	start_philo_routine(t_philo *philo)
 {
 	if (get_stop_simulation(philo->s_data))
+	{
+		drop_forks_and_log(philo, philo->first_fork, philo->second_fork);
 		return ;
+	}
 	eat_routine(philo);
+	drop_forks_and_log(philo, philo->first_fork, philo->second_fork);
 	if (get_stop_simulation(philo->s_data))
 		return ;
 	sleep_routine(philo);
@@ -54,7 +55,7 @@ static void	set_forks_order(t_philo *philo)
 {
 	if (philo->id % 2)
 	{
-		usleep_control(40, philo);
+		usleep_control(50, philo);
 		philo->first_fork = philo->left_fork;
 		philo->second_fork = philo->right_fork;
 	}
@@ -76,10 +77,10 @@ void	*philo_routine(void *arg)
 		if (get_stop_simulation(philo->s_data)
 			|| !get_is_alive(philo))
 			break ;
+		if (philo->id % 2)
+			usleep_control(1, philo);
 		if (take_forks(philo, philo->first_fork, philo->second_fork))
 			start_philo_routine(philo);
-		else
-			usleep(100);
 	}
 	return (NULL);
 }

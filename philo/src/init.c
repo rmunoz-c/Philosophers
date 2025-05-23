@@ -19,11 +19,6 @@ int	init_mutex(t_data *data)
 		write(2, "❌ Error initializing logs mutex\n", 33);
 		return (0);
 	}
-	if (pthread_mutex_init(&data->death_mutex, NULL) != 0)
-	{
-		write(2, "❌ Error initializing death mutex\n", 34);
-		return (0);
-	}
 	if (pthread_mutex_init(&data->stop_mutex, NULL) != 0)
 	{
 		write(2, "❌ Error initializing stop mutex\n", 33);

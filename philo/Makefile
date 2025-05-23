@@ -3,7 +3,7 @@ NAME := philo
 
 # Compilador y flags
 CC = cc
-CFLAGS := -Wall -Werror -Wextra -g -MMD -MP -fsanitize=thread
+CFLAGS := -Wall -Werror -Wextra -MMD -MP
 
 # Rutas de fuentes y objetos
 SRC :=	src/eat_routine.c \

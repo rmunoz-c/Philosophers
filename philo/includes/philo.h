@@ -33,25 +33,22 @@ typedef struct s_philo
 	pthread_mutex_t	*second_fork;
 	pthread_mutex_t	is_alive_mutex;
 	uint64_t		last_meal;
-	uint64_t		born_time;
 	unsigned int	is_alive;
 	int				meals_eaten;
 	unsigned int	id;
-	pthread_t		thread;
 }				t_philo;
 
 typedef struct s_data
 {
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	logs_mutex;
-	pthread_mutex_t	death_mutex;
 	pthread_mutex_t	stop_mutex;
 	pthread_mutex_t	philos_done_mutex;
 	pthread_t		*threads;
-	uint64_t		init_time;
 	uint64_t		time_to_die;
 	uint64_t		time_to_eat;
 	uint64_t		time_to_sleep;
+	uint64_t		born_time;
 	t_philo			*philos;
 	unsigned int	n_philos;
 	unsigned int	philos_done;
@@ -107,6 +104,6 @@ void		*reaper(void *arg);
 
 /*usleep.c*/
 uint64_t	get_time(void);
-void		usleep_control(uint64_t time_in_ms, t_philo *philo);
+void		usleep_control(__useconds_t time_in_ms, t_philo *philo);
 
 #endif

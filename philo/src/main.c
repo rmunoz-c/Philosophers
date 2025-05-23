@@ -16,15 +16,13 @@
 void	run_simulation(t_data *data, t_philo *philos, pthread_t *threads)
 {
 	size_t		i;
-	uint64_t	start_time;
 	pthread_t	reaper_thread;
 
-	start_time = get_time();
 	i = 0;
+	data->born_time = get_time();
 	while (i < data->n_philos)
 	{
-		philos[i].born_time = start_time;
-		philos[i].last_meal = start_time;
+		philos[i].last_meal = data->born_time;
 		pthread_create(&threads[i], NULL, philo_routine, &philos[i]);
 		i++;
 	}
