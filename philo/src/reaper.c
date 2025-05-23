@@ -18,7 +18,8 @@ static int	philo_done(t_philo *philo)
 
 	retvalue = 0;
 	pthread_mutex_lock(&philo->last_meal_mutex);
-	if (philo->meals_eaten >= philo->s_data->max_meals)
+	if (philo->s_data->max_meals > 0
+		&& philo->meals_eaten >= philo->s_data->max_meals)
 		retvalue = 1;
 	pthread_mutex_unlock(&philo->last_meal_mutex);
 	return (retvalue);

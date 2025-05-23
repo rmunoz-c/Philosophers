@@ -12,7 +12,7 @@
 
 #include "../includes/philo.h"
 
-static int take_first_fork(t_philo *philo, pthread_mutex_t *first)
+static int	take_first_fork(t_philo *philo, pthread_mutex_t *first)
 {
 	pthread_mutex_lock(first);
 	if (!get_is_alive(philo) || get_stop_simulation(philo->s_data))
@@ -27,7 +27,7 @@ static int take_first_fork(t_philo *philo, pthread_mutex_t *first)
 	return (1);
 }
 
-int take_forks(t_philo *philo, pthread_mutex_t *first, pthread_mutex_t *second)
+int	take_forks(t_philo *philo, pthread_mutex_t *first, pthread_mutex_t *second)
 {
 	if (!take_first_fork(philo, first))
 		return (0);
