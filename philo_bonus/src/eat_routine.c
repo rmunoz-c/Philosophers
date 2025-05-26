@@ -28,10 +28,12 @@ void	drop_forks(t_philo *philo)
 
 void	eat_routine(t_philo *philo)
 {
+	if (get_stop_simulation(philo->s_data))
+		return ;
+	log_action(philo, "is eating");
 	sem_wait(philo->meal_lock);
 	philo->last_meal = get_time();
-	log_action(philo, "is eating");
+	philo->meals_eaten += 1;
 	sem_post(philo->meal_lock);
 	usleep_control(philo->s_data->time_to_eat, philo);
-	philo->meals_eaten++;
 }

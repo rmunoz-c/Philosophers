@@ -33,5 +33,6 @@ void	ft_putstr_fd(char *s, int fd);
 size_t	ft_strlen(const char *s);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+int		uint_to_str(unsigned int num, char *dest);
 
 #endif

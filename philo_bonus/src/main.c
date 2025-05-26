@@ -35,10 +35,30 @@ static int	run_philos(t_data *data)
 	return (1);
 }
 
+int	start_and_wait_monitor(t_data *data)
+{
+	pthread_t	death_thread;
+
+	if (pthread_create(&death_thread, NULL,
+		(void *(*)(void *))monitor_death, (void *)data) != 0)
+	{
+		write(2, "Error creating monitor_death thread\n", 36);
+		cleanup(data);
+		return (1);
+	}
+	if (pthread_join(death_thread, NULL) != 0)
+	{
+		write(2, "Error joining monitor_death thread\n", 35);
+		cleanup(data);
+		return (1);
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
-	t_data	data;
-
+	t_data		data;
+	
 	if (argc < 5 || argc > 6)
 	{
 		write(1, "Format: ./philo <n_philo> <time_to_die> <time_to_eat>", 54);
@@ -55,6 +75,8 @@ int	main(int argc, char **argv)
 		cleanup(&data);
 		return (write(2, "Error creating philosopher processes\n", 37), 1);
 	}
+	if (start_and_wait_monitor(&data) != 0)
+		return (1);
 	reaper(&data);
 	return (0);
 }

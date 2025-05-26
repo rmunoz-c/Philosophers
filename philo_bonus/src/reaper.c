@@ -55,3 +55,43 @@ void	reaper(t_data *data)
 	}
 	cleanup(data);
 }
+
+static int	check_philo_death(t_data *data, unsigned int i)
+{
+	uint64_t	now;
+
+	sem_wait(data->philos[i].meal_lock);
+	now = get_time();
+	if ((now - data->philos[i].last_meal) > data->time_to_die)
+	{
+		log_action(&data->philos[i], "died");
+		set_stop_simulation(data, 1);
+		kill_all_philos(data);
+		sem_post(data->philos[i].meal_lock);
+		return (1);
+	}
+	sem_post(data->philos[i].meal_lock);
+	return (0);
+}
+
+void	*monitor_death(void *arg)
+{
+	t_data			*data;
+	unsigned int	i;
+
+	data = (t_data *)arg;
+	while (!get_stop_simulation(data))
+	{
+		i = 0;
+		while (i < data->n_philos)
+		{
+			if (check_philo_death(data, i))
+				return (NULL);
+			i++;
+		}
+		usleep(100);
+	}
+	return (NULL);
+}
+
+

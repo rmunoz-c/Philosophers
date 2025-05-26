@@ -1,35 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   usleep.c                                           :+:      :+:    :+:   */
+/*   ft_uint_to_str.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmunoz-c <rmunoz-c@student.42.fr>          #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-05-26 17:52:43 by rmunoz-c          #+#    #+#             */
-/*   Updated: 2025-05-26 17:52:43 by rmunoz-c         ###   ########.fr       */
+/*   Created: 2025-05-26 19:30:24 by rmunoz-c          #+#    #+#             */
+/*   Updated: 2025-05-26 19:30:24 by rmunoz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo.h"
+#include "../includes/utils.h"
 
-uint64_t	get_time(void)
+int	uint_to_str(unsigned int num, char *dest)
 {
-	struct timeval	time;
+	int	len = 0;
+	char temp[10];
+	int i = 0;
+	int j;
 
-	gettimeofday(&time, NULL);
-	return ((uint64_t)(time.tv_sec * 1000 + time.tv_usec / 1000));
-}
-
-void	usleep_control(__useconds_t time_in_ms, t_philo *philo)
-{
-	uint64_t	start;
-
-	start = get_time();
-	while ((get_time() - start) < time_in_ms)
+	if (num == 0)
 	{
-		if (get_stop_simulation(philo->s_data))
-			break;
-		usleep(500);
+		dest[0] = '0';
+		dest[1] = '\0';
+		return (1);
 	}
+	while (num > 0)
+	{
+		temp[i++] = (num % 10) + '0';
+		num /= 10;
+	}
+	j = 0;
+	while (--i >= 0)
+		dest[j++] = temp[i];
+	dest[j] = '\0';
+	return (j);
 }
-

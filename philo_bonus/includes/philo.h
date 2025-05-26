@@ -60,6 +60,8 @@ typedef struct s_data
 # define MAX_PHILOS 200
 
 /*eat_routine.c*/
+// void		cleanup_forks_semaphores(t_data *data, unsigned int count);
+// int			init_forks_semaphores(t_data *data);
 void		take_forks(t_philo *philo);
 void		drop_forks(t_philo *philo);
 void		eat_routine(t_philo *philo);
@@ -91,6 +93,7 @@ void		philo_routine(t_philo *philo);
 /*reaper.c*/
 void		set_stop_simulation(t_data *data, int value);
 void		reaper(t_data *data);
+void		*monitor_death(void *arg);
 
 /*usleep.c*/
 uint64_t	get_time(void);

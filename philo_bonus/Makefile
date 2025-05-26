@@ -6,7 +6,26 @@ CC = cc
 CFLAGS := -Wall -Werror -Wextra -MMD -MP
 
 # Rutas de fuentes y objetos
-SRC :=	
+SRC :=	src/eat_routine.c \
+		src/free_and_stop.c \
+		src/init.c \
+		src/logs.c \
+		src/main.c \
+		src/parser.c \
+		src/philo_routine.c \
+		src/reaper.c \
+		src/usleep.c \
+		utils/ft_atoul.c \
+		utils/ft_calloc.c \
+		utils/ft_free_exit.c \
+		utils/ft_is_str_digit.c \
+		utils/ft_printf_utils.c \
+		utils/ft_printf.c \
+		utils/ft_putnbr_fd.c \
+		utils/ft_putstr_fd.c \
+		utils/ft_strlen.c \
+		utils/ft_strncmp.c \
+		utils/ft_substr.c \
 
 BUILD_DIR := build
 OBJ := $(SRC:.c=.o)

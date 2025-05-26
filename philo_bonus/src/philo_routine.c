@@ -22,29 +22,32 @@ static void	sleep_and_think(t_philo *philo)
 static void	check_death(t_philo *philo)
 {
 	uint64_t	now;
+	uint64_t	last_meal;
 
 	sem_wait(philo->meal_lock);
+	last_meal = philo->last_meal;
+	sem_post(philo->meal_lock);
+
 	now = get_time();
-	if ((now - philo->last_meal) > philo->s_data->time_to_die)
+	if ((now - last_meal) > philo->s_data->time_to_die)
 	{
 		log_action(philo, "died");
 		set_stop_simulation(philo->s_data, 1);
-		sem_post(philo->meal_lock);
 		exit(1);
 	}
-	sem_post(philo->meal_lock);
 }
+
 
 void	philo_routine(t_philo *philo)
 {
-	if (philo->id % 2 == 0)
+	if (philo->id % 2)
 		usleep_control(philo->s_data->time_to_eat / 2, philo);
 	while (1)
 	{
 		take_forks(philo);
-		eat(philo);
+		eat_routine(philo);
 		check_death(philo);
-		put_forks(philo);
+		drop_forks(philo);
 		if (philo->s_data->max_meals != -1
 			&& philo->meals_eaten >= philo->s_data->max_meals)
 		{
@@ -52,6 +55,7 @@ void	philo_routine(t_philo *philo)
 			exit(0);
 		}
 		sleep_and_think(philo);
+		usleep_control(1, philo);
 		check_death(philo);
 	}
 }
